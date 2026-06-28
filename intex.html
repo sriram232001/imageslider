@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Slider</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    
+
+    /* Navbar */
+    nav {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 50px;
+      background: rgba(0, 0, 0, 0.8);
+      position: fixed;
+      top: 0;
+      z-index: 10;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+    }
+
+    nav ul li {
+      margin: 0 15px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      padding: 5px 10px;
+      transition: 0.3s;
+    }
+
+    nav ul li a:hover,
+    nav ul li a.active {
+      color: #00ff66;
+      border-bottom: 2px solid #00ff66;
+    }
+
+    /* Slider Container */
+    .slider {
+      position: relative;
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0 50px;
+      background: #111;
+    }
+
+    .slider-content {
+      max-width: 500px;
+      z-index: 2;
+    }
+
+    .slider-content h1 {
+      font-size: 60px;
+      color: #00ff66;
+    }
+
+    .slider-content h2 {
+      font-size: 50px;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    .slider-content p {
+      font-size: 16px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .slider-content button {
+      padding: 10px 20px;
+      margin-right: 10px;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: 0.3s;
+    }
+
+    .slider-content .btn1 {
+      background: #fff;
+      color: #000;
+    }
+
+    .slider-content .btn1:hover {
+      background: #00ff66;
+      color: #fff;
+    }
+
+    .slider-content .btn2 {
+      background: transparent;
+      border: 2px solid #00ff66;
+      color: #00ff66;
+    }
+
+    .slider-content .btn2:hover {
+      background: #00ff66;
+      color: #fff;
+    }
+
+    /* Slider Image */
+    .slider img {
+      position: absolute;
+      right: 50px;
+      max-height: 80%;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.7);
+    }
+
+    /* Thumbnail navigation */
+    .thumbnails {
+      position: absolute;
+      bottom: 50px;
+      right: 50px;
+      display: flex;
+      gap: 15px;
+    }
+
+    .thumbnails img {
+      width: 80px;
+      height: 80px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .thumbnails img:hover {
+      transform: scale(1.1);
+      border: 2px solid #00ff66;
+    }
+
+    /* Navigation arrows */
+    .nav-arrows {
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-arrows button {
+      background: #00ff66;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      color: #000;
+      transition: 0.3s;
+    }
+
+    .nav-arrows button:hover {
+      background: #fff;
+      color: #00ff66;
+    }
+
+    @media(max-width: 900px) {
+      .slider {
+        flex-direction: column;
+        padding: 100px 20px 20px;
+      }
+
+      .slider img {
+        position: relative;
+        max-width: 90%;
+        right: 0;
+        margin-top: 20px;
+      }
+
+      .slider-content h1 {
+        font-size: 40px;
+      }
+
+      .slider-content h2 {
+        font-size: 30px;
+      }
+    }
+
+    /* About Section */
+.about {
+  background: #111;
+  color: #fff;
+  padding: 80px 50px;
+}
+
+.about-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 50px;
+  flex-wrap: wrap;
+}
+
+.about-text {
+  flex: 1;
+  min-width: 300px;
+}
+
+.about-text h2 {
+  font-size: 40px;
+  margin-bottom: 20px;
+  color: #00ff66;
+}
+
+.about-text p {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.about-btn {
+  padding: 10px 20px;
+  border: none;
+  background: #00ff66;
+  color: #000;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.about-btn:hover {
+  background: #fff;
+  color: #00ff66;
+}
+
+.about-image {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  justify-content: center;
+}
+
+.about-image img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.7);
+}
+
+/* Projects Section */
+.projects {
+  background: #000;
+  color: #fff;
+  padding: 80px 50px;
+  text-align: center;
+}
+
+.projects-header h2 {
+  font-size: 40px;
+  color: #00ff66;
+  margin-bottom: 10px;
+}
+
+.projects-header p {
+  font-size: 16px;
+  color: #aaa;
+  margin-bottom: 50px;
+}
+
+.projects-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+}
+
+.project-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.7);
+  transition: transform 0.3s;
+}
+
+.project-card:hover {
+  transform: scale(1.05);
+}
+
+.project-card img {
+  width: 100%;
+  height: 100%;
+  border-radius: 15px;
+  display: block;
+  transition: 0.5s;
+}
+
+.project-card:hover img {
+  opacity: 0.7;
+}
+
+.project-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  background: rgba(0,0,0,0.7);
+  transform: translateY(100%);
+  transition: 0.4s;
+}
+
+.project-card:hover .project-info {
+  transform: translateY(0);
+}
+
+.project-info h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #00ff66;
+}
+
+.project-info p {
+  font-size: 14px;
+  color: #ddd;
+}
+
+/* Video Link Section */
+.video-links {
+  background: #111;
+  color: #fff;
+  padding: 80px 50px;
+  text-align: center;
+}
+
+.video-links-header h2 {
+  font-size: 40px;
+  color: #00ff66;
+  margin-bottom: 10px;
+}
+
+.video-links-header p {
+  color: #aaa;
+  margin-bottom: 40px;
+  font-size: 16px;
+}
+
+.video-links-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.video-card {
+  background: #1a1a1a;
+  border-radius: 15px;
+  overflow: hidden;
+  transition: 0.3s;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+}
+
+.video-card:hover {
+  transform: translateY(-10px);
+}
+
+.video-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.video-content {
+  padding: 20px;
+}
+
+.video-content h3 {
+  font-size: 22px;
+  color: #00ff66;
+  margin-bottom: 10px;
+}
+
+.video-content p {
+  font-size: 15px;
+  color: #ccc;
+  margin-bottom: 20px;
+}
+
+.video-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #00ff66;
+  color: #000;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.video-btn:hover {
+  background: #fff;
+  color: #00ff66;
+}
+
+/* Contact Section */
+.contact {
+  background: #111;
+  color: #fff;
+  padding: 80px 50px;
+  text-align: center;
+}
+
+.contact-header h2 {
+  font-size: 40px;
+  color: #00ff66;
+  margin-bottom: 10px;
+}
+
+.contact-header p {
+  font-size: 16px;
+  color: #aaa;
+  margin-bottom: 50px;
+}
+
+.contact-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 50px;
+}
+
+.contact-form {
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  outline: none;
+  font-size: 16px;
+}
+
+.contact-form button {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #00ff66;
+  color: #000;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.contact-form button:hover {
+  background: #fff;
+  color: #00ff66;
+}
+
+.contact-info {
+  flex: 1;
+  min-width: 250px;
+  max-width: 400px;
+  text-align: left;
+}
+
+.contact-info h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #00ff66;
+}
+
+.contact-info p {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.social-links {
+  margin-top: 20px;
+}
+
+.social-links a {
+  display: inline-block;
+  margin-right: 15px;
+  font-size: 22px;
+  color: #00ff66;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.social-links a:hover {
+  color: #fff;
+}
+
+/* Footer */
+.footer {
+  background: #000;
+  color: #fff;
+  padding: 60px 50px 20px;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 30px;
+}
+
+.footer-about,
+.footer-links,
+.footer-contact {
+  flex: 1;
+  min-width: 250px;
+}
+
+.footer-about h3,
+.footer-links h3,
+.footer-contact h3 {
+  color: #00ff66;
+  margin-bottom: 15px;
+}
+
+.footer-about p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #aaa;
+}
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links ul li {
+  margin-bottom: 10px;
+}
+
+.footer-links ul li a {
+  color: #aaa;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.footer-links ul li a:hover {
+  color: #00ff66;
+}
+
+.footer-contact p {
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.footer-social a {
+  display: inline-block;
+  margin-right: 12px;
+  font-size: 22px;
+  color: #00ff66;
+  transition: 0.3s;
+  text-decoration: none;
+}
+
+.footer-social a:hover {
+  color: #fff;
+}
+
+.footer-bottom {
+  text-align: center;
+  border-top: 1px solid #222;
+  padding-top: 15px;
+  font-size: 14px;
+  color: #888;
+}
+
+
+  </style>
+</head>
+<body>
+
+      
+
+  <!-- Navbar -->
+  <nav>
+    <h2 style="color:#00ff66;">Logo</h2>
+    <ul>
+      <li><a href="#home" class="active">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#project">Project</a></li>
+      <li><a href="#video">Video</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Slider -->
+  <section class="slider" id="home">
+    <div class="slider-content">
+      <h1>Godness Of</h1>
+      <h2>God</h2>
+      <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptate sunt magnam soluta et odio ea?</p>
+      <button class="btn1">See More</button>
+      <button class="btn2">Subscribe</button>
+    </div>
+
+    <img id="mainImage" src="sriram size 2m.jpeg" alt="Crow">
+
+    <!-- Thumbnails -->
+    <div class="thumbnails">
+      <img src="https://i.ibb.co/3Wh0fb7/crow.jpg" onclick="changeImage(this.src)">
+      <img src="https://i.ibb.co/ZVPy95F/butterfly.jpg" onclick="changeImage(this.src)">
+      <img src="https://i.ibb.co/sjrMTXw/eagle.jpg" onclick="changeImage(this.src)">
+      <img src="https://i.ibb.co/TrP6zH8/owl.jpg" onclick="changeImage(this.src)">
+    </div>
+
+    <!-- Navigation Arrows -->
+    <div class="nav-arrows">
+      <button onclick="prevImage()">&#10094;</button>
+      <button onclick="nextImage()">&#10095;</button>
+    </div>
+  </section>
+         <!-- About Section -->
+  <section class="about" id="about">
+    <div class="about-container">
+      <div class="about-text">
+      <h2>Abouts</h2>
+      <br>
+        <h2>Lord Mahadev Sivan</h2>
+        <p>
+          We are passionate about capturing the beauty of wildlife through modern web design.
+          Our slider project showcases high-quality images of birds and nature, blending creativity
+          with responsive and interactive UI design. 
+        </p>
+        <p>
+          With smooth animations and an elegant interface, our goal is to create an engaging
+          experience for every visitor. Whether you are here for inspiration or learning, 
+          this project is built to inspire.
+        </p>
+        <button class="about-btn">Learn More</button>
+      </div>
+      <div class="about-image">
+        <img src="sivan.jfif" alt="About Image">
+      </div>
+    </div>
+  </section>
+
+  
+        <h2>Hanuman</h2>
+        <p>
+          We are passionate about capturing the beauty of wildlife through modern web design.
+          Our slider project showcases high-quality images of birds and nature, blending creativity
+          with responsive and interactive UI design. 
+        </p>
+        <p>
+          With smooth animations and an elegant interface, our goal is to create an engaging
+          experience for every visitor. Whether you are here for inspiration or learning, 
+          this project is built to inspire.
+        </p>
+        <button class="about-btn">Learn More</button>
+      </div>
+      <div class="about-image">
+        <img src="Hanuman, HARISH MOGER.jfif" alt="About Image">
+      </div>
+    </div>
+  </section>
+
+   
+        <h2>Krishna</h2>
+        <p>
+          We are passionate about capturing the beauty of wildlife through modern web design.
+          Our slider project showcases high-quality images of birds and nature, blending creativity
+          with responsive and interactive UI design. 
+        </p>
+        <p>
+          With smooth animations and an elegant interface, our goal is to create an engaging
+          experience for every visitor. Whether you are here for inspiration or learning, 
+          this project is built to inspire.
+        </p>
+        <button class="about-btn">Learn More</button>
+      </div>
+      <div class="about-image">
+        <img src="krishna.jfif" alt="About Image">
+      </div>
+    </div>
+  </section>
+
+  
+        <h2>Murugan</h2>
+        <p>
+          We are passionate about capturing the beauty of wildlife through modern web design.
+          Our slider project showcases high-quality images of birds and nature, blending creativity
+          with responsive and interactive UI design. 
+        </p>
+        <p>
+          With smooth animations and an elegant interface, our goal is to create an engaging
+          experience for every visitor. Whether you are here for inspiration or learning, 
+          this project is built to inspire.
+        </p>
+        <button class="about-btn">Learn More</button>
+      </div>
+      <div class="about-image">
+        <img src="murugan.jfif" alt="About Image">
+      </div>
+    </div>
+  </section>
+
+        <h2>Raman</h2>
+        <p>
+          We are passionate about capturing the beauty of wildlife through modern web design.
+          Our slider project showcases high-quality images of birds and nature, blending creativity
+          with responsive and interactive UI design. 
+        </p>
+        <p>
+          With smooth animations and an elegant interface, our goal is to create an engaging
+          experience for every visitor. Whether you are here for inspiration or learning, 
+          this project is built to inspire.
+        </p>
+        <button class="about-btn">Learn More</button>
+      </div>
+      <div class="about-image">
+        <img src="rama.jfif" alt="About Image">
+      </div>
+    </div>
+  </section>
+
+  
+        <h2>Vinayakan</h2>
+        <p>
+          We are passionate about capturing the beauty of wildlife through modern web design.
+          Our slider project showcases high-quality images of birds and nature, blending creativity
+          with responsive and interactive UI design. 
+        </p>
+        <p>
+          With smooth animations and an elegant interface, our goal is to create an engaging
+          experience for every visitor. Whether you are here for inspiration or learning, 
+          this project is built to inspire.
+        </p>
+        <button class="about-btn">Learn More</button>
+      </div>
+      <div class="about-image">
+        <img src="vinayakan.jfif" alt="About Image">
+      </div>
+    </div>
+  </section>
+  
+
+    <!-- Project Section -->
+  <section class="project" id="project">
+    <div class="projects-header">
+      <h2>Projects</h2>
+      <p>Explore some of our creative works and interactive web designs</p>
+    </div>
+
+    <div class="projects-container">
+      <div class="project-card">
+        <img src="coding.jfif" alt="Project 1">
+        <div class="project-info">
+          <h3>Crow Slider</h3>
+          <p>A modern responsive slider featuring a detailed crow image.</p>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <img src="Github.jfif" alt="Project 2">
+        <div class="project-info">
+          <h3>Butterfly Showcase</h3>
+          <p>Beautiful and colorful butterfly slider design for nature lovers.</p>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <img src="linked.jfif" alt="Project 3">
+        <div class="project-info">
+          <h3>Eagle Portfolio</h3>
+          <p>Strong and bold design highlighting the eagle in high definition.</p>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <img src="managernment.jfif" alt="Project 4">
+        <div class="project-info">
+          <h3>Owl Night Theme</h3>
+          <p>Mysterious and dark-themed project featuring the wise owl.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video Link Project Section -->
+<section class="video" id="video">
+  <div class="video-links-header">
+    <h2>Project Videos</h2>
+    <p>Watch our latest project demos and tutorials.</p>
+  </div>
+
+  <div class="video-links-container">
+
+    <!-- Video Card 1 -->
+    <div class="video-card">
+      <img src="Hanuman, HARISH MOGER.jfif" alt="Video Thumbnail">
+      <div class="video-content">
+        <h3>Portfolio Website Demo</h3>
+        <p>Responsive portfolio project using HTML, CSS & JavaScript.</p>
+        <a href="Raghunandana _ A Powerful Vandana Of Lord Ram By Hanuman Ji.mp4" target="_blank" class="video-btn">
+          ▶ Watch Video
+        </a>
+      </div>
+    </div>
+
+    <!-- Contact Section -->
+  <section class="contact" id="contact">
+    <div class="contact-header">
+      <h2>Contact Us</h2>
+      <p>We would love to hear from you! Get in touch for projects or collaborations.</p>
+    </div>
+
+    <div class="contact-container">
+      <!-- Contact Form -->
+      <form class="contact-form">
+        <input type="text" placeholder="Your Name" required>
+        <input type="email" placeholder="Your Email" required>
+        <textarea rows="5" placeholder="Your Message" required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+
+      <!-- Contact Info -->
+      <div class="contact-info">
+        <h3>Get In Touch</h3>
+        <p><strong>Email:</strong> sidsriramdevs@gmail.com</p>
+        <p><strong>Phone:</strong> +91 63811 25688</p>
+        <p><strong>Location:</strong> Chennai, India</p>
+        <div class="social-links">
+          <a href="#">🌐</a>
+          <a href="#">🐦</a>
+          <a href="#">📸</a>
+          <a href="#">💼</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+    <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+
+      <!-- Footer About -->
+      <div class="footer-about">
+        <h3>MyPortfolio</h3>
+        <p>
+          A modern responsive portfolio showcasing wildlife-themed projects, 
+          interactive sliders, and creative web designs. Built with ❤️ and code.
+        </p>
+      </div>
+
+      <!-- Footer Links -->
+      <div class="footer-links">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">Abouts</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#video"><li>Video</a></li>
+          <li><a href="#contact">Contacts</a></li>
+        </ul>
+      </div>
+
+      <!-- Footer Contact -->
+      <div class="footer-contact">
+        <h3>Contact</h3>
+        <p>Email: sidsriramdevs@gmail.com</p>
+        <p>Phone: +91 63811 25688</p>
+        <div class="footer-social">
+          <a href="#">🌐</a>
+          <a href="#">🐦</a>
+          <a href="#">📸</a>
+          <a href="#">💼</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 MyPortfolio. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    const images = [
+      "coding.jfif",
+      "Github.jfif",
+      "linked.jfi",
+      "managernment.jfif"
+    ];
+
+    let index = 0;
+    const mainImage = document.getElementById("mainImage");
+
+    function changeImage(src) {
+      mainImage.src = src;
+      index = images.indexOf(src);
+    }
+
+    function nextImage() {
+      index = (index + 1) % images.length;
+      mainImage.src = images[index];
+    }
+
+    function prevImage() {
+      index = (index - 1 + images.length) % images.length;
+      mainImage.src = images[index];
+    }
+
+    
+  const videoCards = document.querySelectorAll(".video-card");
+
+  videoCards.forEach((card) => {
+    card.addEventListener("mouseenter", () => {
+      card.style.transform = "scale(1.05)";
+    });
+
+    card.addEventListener("mouseleave", () => {
+      card.style.transform = "scale(1)";
+    });
+  });
+
+
+    // Auto play slider
+    setInterval(nextImage, 5000);
+  </script>
+
+</body>
+</html>
